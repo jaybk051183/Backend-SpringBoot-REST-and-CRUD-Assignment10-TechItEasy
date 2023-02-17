@@ -1,6 +1,7 @@
 package nl.novi.techiteasycontroller.Controllers;
 
 import nl.novi.techiteasycontroller.Exceptions.RecordNotFoundException;
+import nl.novi.techiteasycontroller.Exceptions.TvNameTooLongException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class TelevisionsController {
         // Controleer of de opgegeven id overeenkomt met een geldige televisie-ID:
         if (id != 1 && id != 2 && id != 3) {
             //Geef een foutmelding in een ResponseEntity met statuscode BAD_REQUESTals het id niet overeenkomt:
-            return new ResponseEntity<>("Invalid television ID", HttpStatus.BAD_REQUEST);
+            throw new RecordNotFoundException("Opgegeven ID kan niet gevonden worden");
         } else {
             //Als het id wel overeenkomt, haal dan de bijbehorende televisiegegevens op en retourneer een String in een ResponseEntity met statuscode OK:
             if (id == 1) {
@@ -85,17 +86,20 @@ public class TelevisionsController {
     @PostMapping("television")
     public ResponseEntity<String> addTelevision(@RequestBody String television) {
         //Voeg m.b.v. de add methode een television als String toe aan de lijst.
-        televisionDataBase.add(television);
-        return new ResponseEntity<>("Television added successfully", HttpStatus.CREATED);
+        if (television.length() > 20){
+            throw new TvNameTooLongException("Name of the television is too long");
+        }
+        else {
+            televisionDataBase.add(television);
+            return new ResponseEntity<>("Television added successfully", HttpStatus.CREATED);
+        }
     }
-
 
 /*    Basisopdracht:
     @DeleteMapping("television/{id}")
     public ResponseEntity<String>deleteTelevision(@PathVariable int id){
         return ResponseEntity.noContent().build();
     }*/
-
 
     //Bonusopdracht: Zorg dat je DELETE request de string op positie x in de "database" verwijderd. (verwijderen kun je het best nabootsen door de waarde naar null wijzigen, net als bij PUT)
     @DeleteMapping("television/{id}")
