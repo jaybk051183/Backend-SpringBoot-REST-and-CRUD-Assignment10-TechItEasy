@@ -4,4 +4,9 @@ public class TvNameTooLongException  extends  RuntimeException{
     public  TvNameTooLongException(String message) {
         super(message);
     }
+
+    public TvNameTooLongException(){
+        super();
+    }
+
 }

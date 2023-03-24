@@ -14,14 +14,11 @@ public class TelevisionsController {
     ArrayList<String >televisionDataBase = new ArrayList<>();
 
     //Bonusopdracht: Zorg dat je GET requests de juiste data returnen uit de lijst. (Gebruik de "id" PathVariable als index van de lijst)
+
     @GetMapping("television")
-    public ResponseEntity<ArrayList<String>> getAllTelevisions() {
-        //Voeg televisie items toe aan de lijst:
-        televisionDataBase.add("Sony Bravia");
-        televisionDataBase.add("Samsung QLED");
-        televisionDataBase.add("LG OLED");
-        //Retourneer de lijst als een responseEntity:
-        return new ResponseEntity<>(televisionDataBase, HttpStatus.OK);
+    public ResponseEntity<Object> getAllTelevisions() {
+        //// Return een String met een 200 status
+        return new ResponseEntity<>("television", HttpStatus.OK);
     }
 
 /*    Basisopdracht: Ophalen van de television entiteiten uit de database door GetMapping
@@ -31,7 +28,6 @@ public class TelevisionsController {
             throw new RecordNotFoundException("Novi is de beste");
         }
         return new ResponseEntity<>("television: " + id, HttpStatus.OK);*/
-
 
     @GetMapping("television/{id}")
     public ResponseEntity<String> getTelevisionById(@PathVariable int id) {
@@ -49,7 +45,7 @@ public class TelevisionsController {
             } else {
                 television= "LG OLED";
             }
-            return new ResponseEntity<>(television, HttpStatus.OK);
+            return new ResponseEntity<>("Television with id: " + id, HttpStatus.OK);
         }
     }
 
@@ -65,7 +61,7 @@ public class TelevisionsController {
     public ResponseEntity<String> updateTelevision(@PathVariable int id, @RequestBody String television) {
         //Controleer of het opgegeven indexnummer (id) binnen de array valt:
         if (id >= televisionDataBase.size() || id < 0) {
-            //Als indexnummer buiten het bereik van de lijst valt, retourneer een foutmelding:
+            //Als indexnummer buiten het bereik van de lijst valt, retourneer een foutmelding: of throw een exception.
             return new ResponseEntity<>("Invalid index", HttpStatus.BAD_REQUEST);
             //Anders wijzig de stringwaarde op de positie id in de lijst m.b.v. de set-methode.
             // Geef vervolgens een ResponseEntity met statuscode OK:
@@ -121,6 +117,55 @@ public class TelevisionsController {
 }
 
 
+//Alternatieve uitwerking:
 
+/*
+package nl.novi.techiteasy1121.controllers;
+ import org.springframework.http.ResponseEntity;
+ import org.springframework.web.bind.annotation.*;
 
+@RestController
+public class TelevisionController {
+
+    @GetMapping("/televisions")
+    public ResponseEntity<Object> getAllTelevisions() {
+
+        // Return een String met een 200 status
+        return ResponseEntity.ok("televisions");
+    }
+
+    @GetMapping("/televisions/{id}")
+    public ResponseEntity<Object> getTelevision(@PathVariable("id") int id) {
+
+        // return een String met een 200 status
+        return ResponseEntity.ok("television with id: " + id);
+
+    }
+
+    @PostMapping("/televisions")
+    public ResponseEntity<Object> addTelevision(@RequestBody String television) {
+
+        // Return een String met een 201 status
+        //De null van created zal over een paar weken vervangen worden door een gegenereerde url.
+        return ResponseEntity.created(null).body("television");
+
+    }
+
+    @DeleteMapping("/televisions/{id}")
+    public ResponseEntity<Object> deleteTelevision(@PathVariable int id) {
+
+        //Return een 204 status
+        return ResponseEntity.noContent().build();
+
+    }
+
+    @PutMapping("/televisions/{id}")
+    public ResponseEntity<Object> updateTelevision(@PathVariable int id, @RequestBody String television) {
+
+        // Return een 204 status
+        return ResponseEntity.noContent().build();
+    }
+}
+
+*/
 
